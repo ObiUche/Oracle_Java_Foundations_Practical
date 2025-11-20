@@ -12,12 +12,16 @@ package duke.choice;
 public class Customer {
     private String name;
     private String size;
+    private Clothing[] items;
+    
+    public Customer(){
+        
+    }
     
     
-    
-    public Customer(String name, String size){
-        this.name = name;
-        this.size = size;
+    public Customer(String userName, String userSize){
+        name = userName;
+        size = userSize;
     }
     
     public void setSize(int measurement){
@@ -39,16 +43,45 @@ public class Customer {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getSize() {
         return size;
     }
 
     public void setSize(String size) {
         this.size = size;
+    }
+    
+    public void addItems(Clothing[] Someitems){
+        items = Someitems;
+    }
+    
+    public Clothing[] getItems(){
+        return this.items;
+    }
+    public double getTotalClothingCost(){
+        double total = 0;
+        for(Clothing item : items){
+            total +=  item.getPrice();
+            System.out.println(item.getDescription()+ ": "  + item.getPrice());
+         }
+        return total;
+    }
+    
+     public void averagePrice(){
+        double total = 0.0;
+         try {
+             for(Clothing item: items){
+                 total += item.getPrice();
+                 if(item.getSize().equals("M")){
+                     throw new ArithmeticException("Item is not Medium");
+                 }
+             }
+             
+             System.out.println("Average " + total / items.length);
+             
+         } catch (ArithmeticException e){
+             System.out.println("" + e.getMessage());
+         }
     }
     
     

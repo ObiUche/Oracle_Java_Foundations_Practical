@@ -5,7 +5,13 @@
  */
 package duke.choice;
 
+import java.util.Arrays;
 import java.util.Set;
+import io.helidon.webserver.Routing;
+import io.helidon.webserver.ServerConfiguration;
+import io.helidon.webserver.WebServer;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  *
@@ -22,51 +28,48 @@ public class ShopApp {
         Customer c1 = new Customer("Pinky", "S");
         c1.setSize(3);
         System.out.println("Pinky Size " + c1.getSize());
-        
-        System.out.println("Customer is "+ c1.getName());
-      
-     
-    
+
+        System.out.println("Customer is " + c1.getName());
+
         // Excersize 2
-        
         Clothing item1 = new Clothing("Blue Jacket", 20.9, "M");
-        Clothing item2 = new Clothing("Orange T-Shirt", 10.5 , "S");
+        Clothing item2 = new Clothing("Orange T-Shirt", 10.5, "S");
         Clothing item3 = new Clothing("Green Scarf", 5, "M");
-        System.out.println(item3.getPrice());
-        Clothing item4 = new Clothing("Blue Shirt", 10.5, "S");
+        Clothing item4 = new Clothing("Blue Shirt", 10.5, "S");;
+
+        //Excersize 4
+        Clothing[] items = {item1, item2, item3, item4};
+        c1.addItems(items);
+        System.out.println("");
+        System.out.println("Shopping List");
+      
+        c1.averagePrice();
         
-        System.out.println(item1.getDescription() + "," + item1.getPrice()+ "," + item1.getSize());
-        System.out.println(item2.getDescription() + "," + item2.getPrice()+ "," + item2.getSize());
-        
-        double tax = 0.2;
-  
-        double total = (item2.getPrice() * 2) + item1.getPrice() ;
-        double totalTax = (total * tax) + total ; 
-        
-        System.out.println("Total " +  totalTax); // Calculates the total value + tax
-       
-       //Excersize 4
-       
-       Clothing[] items = {item1, item2, item3, item4};
-       total = 0;
-        
-        for(Clothing item : items){
-           if (total > 15){
-               break;
-           } else {
-           
-            if (c1.getSize().equals(item.getSize())){
-                 total +=  item.getPrice();
-            System.out.println(item.getDescription()+ ": "  + item.getPrice());
-            } else {
-                System.out.println(item.getDescription() + " is not your size");
-            }
-           }
-           
+        System.out.println("Min Price " + Clothing.MIN_PRICE);
+        for( Clothing item: items ){
+            System.out.println(item);
         }
-        System.out.println("Final bill Total " + total);
         
+        
+        System.out.println("---------");
+        Arrays.sort(c1.getItems());
+         for( Clothing item: items ){
+            System.out.println(item);
+        }
+         
+         
+         try{
+             ItemList list = new ItemList(items);
+             Routing routing = Routing.builder()
+                     .get("/items", list).build();
+             ServerConfiguration  config = ServerConfiguration.builder()
+                     .bindAddress(InetAddress.getLocalHost())
+                     .port(8888).build();
+             WebServer ws = WebServer.create(config,routing);
+             ws.start();
+         } catch(UnknownHostException ex){
+             ex.printStackTrace();
+         }
     }
-    
-    
+
 }
